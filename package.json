@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/samir-shaban-en/nodejs-hw.git"
+    "url": "git+https://github.com/samir-shaban-en/nodejs-hw/tree/01-express"
   },
   "keywords": [],
   "author": "Samir Shaban <samirshabanpsn@gmail.com>",
