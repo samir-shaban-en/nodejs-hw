@@ -1,6 +1,6 @@
 import 'dotenv/config';
 import cors from 'cors';
-import pinoHttp from 'pino-http';
+import pino from 'pino-http';
 import express from 'express';
 
 const PORT = process.env.PORT ?? 3000;
@@ -10,8 +10,22 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const logger = pinoHttp();
-app.use(logger);
+app.use(
+  pino({
+    level: 'info',
+    transport: {
+      target: 'pino-pretty',
+      options: {
+        colorize: true,
+        translateTime: 'HH:MM:ss',
+        ignore: 'pid,hostname',
+        messageFormat:
+          '{req.method} {req.url} {res.statusCode} - {responseTime}ms',
+        hideObject: true,
+      },
+    },
+  }),
+);
 
 app.get('/notes', (req, res) => {
   req.log.info('Отримання усіх нотаток');
@@ -30,26 +44,15 @@ app.get('/test-error', (req, res) => {
   throw new Error('Simulated server error');
 });
 
-app.use((req, res) => {
+app.use((err, req, res, next) => {
+  if (err) {
+    console.error(err.message);
+    return res.status(500).json({
+      message: err.message,
+    });
+  }
+
   res.status(404).json({ message: 'Route not found' });
-});
-
-app.use((err, req, res, next) => {
-  res.status(500).json({
-    message: `${err}`,
-  });
-});
-
-app.use((err, req, res, next) => {
-  console.error(err);
-
-  const isProd = process.env.NODE_ENV === 'production';
-
-  res.status(500).json({
-    message: isProd
-      ? 'Something went wrong. Please try again later.'
-      : err.message,
-  });
 });
 
 app.listen(PORT, () => {
