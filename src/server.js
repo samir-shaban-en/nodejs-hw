@@ -44,14 +44,15 @@ app.get('/test-error', (req, res) => {
   throw new Error('Simulated server error');
 });
 
-app.use((req, res) => {
-  res.status(404).json({ message: 'Route not found' });
-});
-
 app.use((err, req, res, next) => {
-  res.status(500).json({
-    message: `${err}`,
-  });
+  if (err) {
+    req.log?.error(err);
+    return res.status(500).json({
+      message: err.message,
+    });
+  }
+
+  res.status(404).json({ message: 'Route not found' });
 });
 
 app.listen(PORT, () => {
