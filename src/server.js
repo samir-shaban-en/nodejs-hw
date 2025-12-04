@@ -46,9 +46,10 @@ app.get('/test-error', (req, res) => {
 
 app.use((err, req, res, next) => {
   if (err) {
-    req.log?.error(err);
+    console.error(err.message);
     return res.status(500).json({
-      message: err.message,
+      message: 'Internal Server Error',
+      error: err.message,
     });
   }
 
