@@ -3,7 +3,7 @@ import TAGS from '../constants/tags.js';
 import { isValidObjectId } from 'mongoose';
 
 export const getAllNotesSchema = {
-  [Segments.BODY]: Joi.object({
+  [Segments.QUERY]: Joi.object({
     page: Joi.number().integer().min(1).default(1),
     perPage: Joi.number().integer().min(5).max(20).default(10),
     tag: Joi.string()
@@ -38,7 +38,7 @@ export const updateNoteSchema = {
     noteId: Joi.string().custom(objectIdValidator).required(),
   }),
   [Segments.BODY]: Joi.object({
-    title: Joi.string().min(1).required(),
+    title: Joi.string().min(1).optional(),
     content: Joi.string().allow('').optional(),
     tag: Joi.string()
       .valid(...TAGS)
