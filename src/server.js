@@ -9,7 +9,7 @@ import { errors } from 'celebrate';
 import { logger } from './middleware/logger.js';
 import { notFoundHandler } from './middleware/notFoundHandler.js';
 import { errorHandler } from './middleware/errorHandler.js';
-
+import userRoutes from './routes/userRoutes.js';
 import cookieParser from 'cookie-parser';
 
 const PORT = process.env.PORT ?? 3000;
@@ -23,7 +23,7 @@ app.use(cookieParser());
 
 app.use(authRoutes);
 app.use(notesRoutes);
-
+app.use(userRoutes);
 app.use(notFoundHandler);
 
 app.use(errors());
